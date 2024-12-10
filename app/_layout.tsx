@@ -1,39 +1,18 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
+import { WordProvider } from '@/context/WordsContext';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    return (
+        <WordProvider>
+            <Stack
+                screenOptions={{}}>
+                <Stack.Screen options={{ headerTitle: '', headerShown: false }} name="index" />
+                <Stack.Screen options={{ headerShown: false }} name="words" />
+                <Stack.Screen options={{ presentation: 'modal', headerTitle: 'Add word', headerShown: false }} name="add-word" />
+                <Stack.Screen options={{ headerTitle: '', headerShown: false }} name="single-word" />
+                <Stack.Screen options={{ presentation: 'modal', headerTitle: '', }} name="hint" />
+                <Stack.Screen options={{ headerTitle: '', headerShown: false }} name="explore/index" />
+            </Stack>
+        </WordProvider>
+    );
 }
