@@ -7,10 +7,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, Animated, Dimensions, 
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Explore = () => {
-    const [showHint, setShowHint] = useState(false);
-    const [word, setWord] = useState('Guten Tag!');
-    const [isFlipped, setIsFlipped] = useState(false);
-    const [animatedValue] = useState(new Animated.Value(0));
     const { top } = useSafeAreaInsets()
 
     return (

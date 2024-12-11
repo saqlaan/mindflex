@@ -8,6 +8,7 @@ interface WordContextType {
     addWord: ({ word, translation, tag }: { word: string, translation: string, tag: string }) => Promise<void>;
     removeWord: (id: number) => Promise<void>;
     updateWord: (updatedWord: Word) => Promise<void>;
+    resetTimeSpent: () => Promise<void>;
     tags: string[];
 }
 // Create the context
@@ -17,6 +18,8 @@ const WordContext = createContext<WordContextType | undefined>(undefined);
 export const WordProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [words, setWords] = useState<Word[]>([]);
     const [tags, setTags] = useState(['German A1', 'German A2', 'German B1', 'German B2'])
+
+
 
     // AsyncStorage key
     const STORAGE_KEY = "@words";
@@ -53,13 +56,19 @@ export const WordProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Update a word
     const updateWord = async (updatedWord: Word) => {
-        const newWords = words.map((word) => (word.id === updatedWord.id ? updatedWord : word));
+        const newWords = words.map((word) => (word.id === updatedWord.id ? { ...updatedWord } : word));
         setWords(newWords);
         await saveWordsToStorage(newWords);
     };
 
+    const resetTimeSpent = async () => {
+        const newWords = words.map((word) => ({ ...word, timeSpend: 0, timeStart: 0 }));
+        setWords([...newWords]);
+        await saveWordsToStorage([...newWords]);
+    }
+
     return (
-        <WordContext.Provider value={{ words, addWord, removeWord, updateWord, tags }}>
+        <WordContext.Provider value={{ words, addWord, removeWord, updateWord, tags, resetTimeSpent }}>
             {children}
         </WordContext.Provider>
     );

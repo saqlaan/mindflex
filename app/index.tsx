@@ -4,8 +4,16 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useCallback } from 'react';
+import { useWordContext } from '@/context/WordsContext';
 
 export default function HomeScreen() {
+    const { updateWord, resetTimeSpent } = useWordContext()
+
+    const handleResetTimeSpent = useCallback(() => {
+        resetTimeSpent();
+    }, [])
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <ThemedView style={styles.container}>
@@ -22,6 +30,9 @@ export default function HomeScreen() {
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.link} onPress={() => router.navigate('/explore')}>
                         <ThemedText type="link">Visit</ThemedText>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.link} onPress={handleResetTimeSpent}>
+                        <ThemedText type="link">Reset time spend</ThemedText>
                     </TouchableOpacity>
                 </View>
             </ThemedView>

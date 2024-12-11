@@ -1,14 +1,13 @@
 import { ThemedText } from "@/components/ThemedText";
 import { generateBackgroundColor } from "@/functions/bg-colors";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Animated, Dimensions, Button } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 const { height } = Dimensions.get('screen')
 
 const WordScrollItem = (item) => {
     const { bottom } = useSafeAreaInsets()
-
     const { word } = item
     // return null
     return (
@@ -17,7 +16,7 @@ const WordScrollItem = (item) => {
                 <Text style={{ fontSize: 32 }}>{word}</Text>
             </View>
             <TouchableOpacity onPress={() => router.navigate('/hint')} style={{ alignItems: 'center' }} >
-                <ThemedText type="link">Hint</ThemedText>
+                <ThemedText style={{ color: '#000' }} type="link">Hint</ThemedText>
             </TouchableOpacity>
         </View>
     );
