@@ -1,26 +1,44 @@
 import { ThemedText } from "@/components/ThemedText";
 import { generateBackgroundColor } from "@/functions/bg-colors";
+import { Word } from "@/types";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Animated, Dimensions, Button } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 const { height } = Dimensions.get('screen')
 
-const WordScrollItem = (item) => {
+const WordScrollItem = ({ word }: { word: Word }) => {
     const { bottom } = useSafeAreaInsets()
-    const { word } = item
-    // return null
+    if (word.id === -1) {
+        return <FinalScrollItem />
+    }
+
+    if (word)
+        return (
+            <View style={[styles.container, { height: height, backgroundColor: generateBackgroundColor(), paddingBottom: bottom }]}>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+                    <Text style={{ fontSize: 32 }}>{word.word}</Text>
+                </View>
+                <TouchableOpacity onPress={() => router.navigate('/hint')} style={{ alignItems: 'center' }} >
+                    <ThemedText style={{ color: '#000' }} type="link">Hint</ThemedText>
+                </TouchableOpacity>
+            </View>
+        );
+};
+
+export const FinalScrollItem = () => {
+    const { bottom } = useSafeAreaInsets()
     return (
         <View style={[styles.container, { height: height, backgroundColor: generateBackgroundColor(), paddingBottom: bottom }]}>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-                <Text style={{ fontSize: 32 }}>{word}</Text>
+                <Text style={{ fontSize: 32, textAlign: 'center', marginBottom: 20 }}>You have finished your words for today</Text>
+                <TouchableOpacity onPress={() => router.back()} style={{ alignItems: 'center' }} >
+                    <Text style={{ fontSize: 26 }}>Go back</Text>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => router.navigate('/hint')} style={{ alignItems: 'center' }} >
-                <ThemedText style={{ color: '#000' }} type="link">Hint</ThemedText>
-            </TouchableOpacity>
         </View>
-    );
-};
+    )
+}
 
 const styles = StyleSheet.create({
     container: {

@@ -1,5 +1,5 @@
 import { Link, router, Stack } from 'expo-router';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -11,7 +11,10 @@ export default function HomeScreen() {
     const { updateWord, resetTimeSpent } = useWordContext()
 
     const handleResetTimeSpent = useCallback(() => {
-        resetTimeSpent();
+        Alert.alert("Reset time spend", "Are you sure you want to the state of the words?", [
+            { text: "Cancel", style: "cancel" },
+            { text: "Confirm", style: "destructive", onPress: () => resetTimeSpent() },
+        ]);
     }, [])
 
     return (

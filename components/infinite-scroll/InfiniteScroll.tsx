@@ -1,55 +1,50 @@
 import { app_data } from '@/data';
-import React, { useRef, useState } from 'react';
-import { View, FlatList, Text, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, FlatList, Text, StyleSheet, Dimensions, ViewToken } from 'react-native';
 import WordScrollItem from './components/WordScrollItem';
 import { useWordContext } from '@/context/WordsContext';
 import { Word } from '@/types';
+import { prioritizeWords } from '@/core/priority';
 
 // Main component
 const InfiniteScroll = () => {
     const { words, updateWord } = useWordContext();
-    const [startTime, setStartTime] = useState<number | null>(null);
+
+
 
     const renderItem = ({ item }) => {
-        return <WordScrollItem {...item} />
+        return <WordScrollItem word={item} />
     }
-
-    const [timeSpent, setTimeSpent] = useState({});
-
-    // console.log(timeSpent);
 
     const { height } = Dimensions.get('window');
 
     const onViewableItemsChanged = ({
         viewableItems,
-        changed
+        changed,
     }: {
-        viewableItems: { index: number; isViewable: boolean; item: Word }[];
-        changed: { index: number; isViewable: boolean; item: Word }[]
+        viewableItems: (ViewToken & { item: Word })[];
+        changed: (ViewToken & { item: Word })[];
     }) => {
-        // Handle viewable items
-        console.log({ viewableItems })
         viewableItems.forEach((item) => {
+            if (item.item.id === -1) return
+            const word = words.find(word => word.id === item.item.id) as Word;
             updateWord({
-                ...item.item,
-                timeStart: item.item.timeStart ?? Date.now() // Use default value if undefined
+                ...word,
+                timeStart: Date.now()
             });
         });
-        // Handle changed items
-        changed.forEach((item) => {
+        changed.forEach((item, index) => {
+            if (item.item.id === -1) return
             if (!item.isViewable) {
+                const word = words.find(word => word.id === item.item.id) as Word;
                 updateWord({
-                    ...item.item,
-                    timeSpend: (item.item.timeSpend || 0) + (Date.now() - (item.item.timeStart || Date.now())),
-                    timeStart: undefined // Reset timeStart after use, if needed
+                    ...word,
+                    timeSpend: (word.timeSpend || 0) + (Date.now() - (word.timeStart || Date.now())),
+                    timeStart: undefined
                 });
-                console.log("Time spent: ", (Date.now() - (item.item.timeStart || Date.now())));
             }
         });
     };
-
-
-    console.log(words);
 
     const viewabilityConfig = {
         waitForInteraction: false, // Optional: To ensure the item is being actively interacted with
@@ -58,7 +53,7 @@ const InfiniteScroll = () => {
 
     return (
         <FlatList
-            data={words}
+            data={[...words, { id: -1 } as Word]}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
             contentContainerStyle={styles.flatListContainer}

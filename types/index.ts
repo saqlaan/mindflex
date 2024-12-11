@@ -12,7 +12,7 @@ export interface Word {
   translation: string;
   hint?: string;
   tag: string; // Optional property
-  dateAndTimeCreated: string;
+  dateAndTimeCreated: number;
   learningRate: LearningRate;
   timeSpend?: number; // In seconds
   timeStart?: number;

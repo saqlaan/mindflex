@@ -13,16 +13,11 @@ interface WordContextType {
 }
 // Create the context
 const WordContext = createContext<WordContextType | undefined>(undefined);
-
+const STORAGE_KEY = "@words";
 // Provider component
 export const WordProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [words, setWords] = useState<Word[]>([]);
     const [tags, setTags] = useState(['German A1', 'German A2', 'German B1', 'German B2'])
-
-
-
-    // AsyncStorage key
-    const STORAGE_KEY = "@words";
 
     // Load words from AsyncStorage on initial render
     useEffect(() => {
@@ -42,7 +37,8 @@ export const WordProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Add a new word
     const addWord = async ({ word, translation, tag }: { word: string, translation: string, tag: string }) => {
-        const newWords = [...words, { word, translation, tag, id: Date.now() }];
+        const newWords = [...words,
+        { word, translation, tag, id: Date.now(), dateAndTimeCreated: Date.now(), timeSpend: 0, learningRate: 0 } as Word];
         setWords(newWords);
         await saveWordsToStorage(newWords);
     };
@@ -57,12 +53,13 @@ export const WordProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Update a word
     const updateWord = async (updatedWord: Word) => {
         const newWords = words.map((word) => (word.id === updatedWord.id ? { ...updatedWord } : word));
-        setWords(newWords);
-        await saveWordsToStorage(newWords);
+        setWords([...newWords]);
+        await saveWordsToStorage([...newWords]);
     };
 
     const resetTimeSpent = async () => {
-        const newWords = words.map((word) => ({ ...word, timeSpend: 0, timeStart: 0 }));
+        if (words.length === 0) return
+        const newWords = words.map(word => ({ ...word, timeSpend: 0, timeStart: 0 }));
         setWords([...newWords]);
         await saveWordsToStorage([...newWords]);
     }
