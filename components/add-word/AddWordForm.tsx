@@ -22,7 +22,9 @@ export default function AddWordForm() {
         if (!isValid) return
         createWord({ word, translation, tag: selectedTag })
         alert('Word added!')
-        router.back();
+        setWord('')
+        setTranslation('')
+        setHint('')
     };
 
     return (
@@ -37,7 +39,6 @@ export default function AddWordForm() {
                         value={word}
                         onChangeText={setWord}
                         autoCapitalize='none'
-                        autoCorrect={false}
                         placeholderTextColor={'#ccc'}
                         autoCorrect={true}
                     />

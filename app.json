@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.saqlaan.MindLex"
     },
     "android": {
       "adaptiveIcon": {
@@ -44,6 +45,12 @@
       "eas": {
         "projectId": "9a252910-95ac-4492-a2be-4f8a80eb721c"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/9a252910-95ac-4492-a2be-4f8a80eb721c"
     }
   }
 }
