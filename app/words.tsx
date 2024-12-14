@@ -1,9 +1,10 @@
 import Header from "@/components/header/Header";
 import { ThemedText } from "@/components/ThemedText";
 import { useWordContext } from "@/context/WordsContext";
+import { deleteWord, readWords, subscribeToWords } from "@/firebase/words/operations";
 import { Word } from "@/types";
 import { router } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
     View,
     Text,
@@ -17,15 +18,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function Words({ navigation }: { navigation: any }) {
-    const { words, removeWord, tags } = useWordContext();
+    const { removeWord, tags } = useWordContext();
     const [selectedTag, setSelectedTag] = useState('');
+    const [words, setWords] = useState<Word[]>([])
     // Handle word deletion
-    const handleDelete = (id: number) => {
+
+    const confirmDeleteWord = async (id: string) => {
+        return await deleteWord(id)
+    }
+
+    const handleDelete = (id: string) => {
         Alert.alert("Delete Word", "Are you sure you want to delete this word?", [
             { text: "Cancel", style: "cancel" },
-            { text: "Delete", style: "destructive", onPress: () => removeWord(id) },
+            { text: "Delete", style: "destructive", onPress: () => deleteWord(id) },
         ]);
     };
+
+    useEffect(() => {
+        const unsubscribe = subscribeToWords(setWords);
+        return () => unsubscribe();
+    }, [])
 
     const filteredList = useMemo(() => {
         if (selectedTag === "") return words
@@ -34,7 +46,7 @@ export default function Words({ navigation }: { navigation: any }) {
 
     const filteredTags = useMemo(() => {
         return tags.filter(tag => !!words.find(word => word.tag === tag))
-    }, [tags])
+    }, [tags, words])
 
     // Navigate to edit screen
     const handleEdit = (word: Word) => {
@@ -88,7 +100,7 @@ export default function Words({ navigation }: { navigation: any }) {
                     <>
                         <FlatList
                             data={filteredList}
-                            keyExtractor={(item) => item.id.toString()}
+                            keyExtractor={(item) => item.id}
                             renderItem={renderItem}
                         />
                     </>

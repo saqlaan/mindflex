@@ -6,6 +6,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { useWordContext } from '@/context/WordsContext';
 import { router, useGlobalSearchParams } from 'expo-router';
 import Header from '@/components/header/Header';
+import { createWord, readWords, updateWord } from '@/firebase/words/operations';
 
 
 export default function AddWord() {
@@ -14,26 +15,29 @@ export default function AddWord() {
     const [translation, setTranslation] = useState('');
     const [hint, setHint] = useState('');
     const [selectedTag, setSelectedTag] = useState('')
-    const { addWord, updateWord, words, tags } = useWordContext()
+    const { words, tags } = useWordContext()
     const isValid = word !== "" && translation !== "" && selectedTag !== ""
 
     useEffect(() => {
-        if (id) {
-            const existingWord = words.find(word => word.id == Number(id))
-            if (existingWord) {
-                setWord(existingWord.word)
-                setTranslation(existingWord.translation)
-                setSelectedTag(existingWord.tag)
+        async function injectWord() {
+            if (id) {
+                const words = await readWords();
+                const existingWord = words.find(word => word.id == id)
+                if (existingWord) {
+                    setWord(existingWord.word)
+                    setTranslation(existingWord.translation)
+                    setSelectedTag(existingWord.tag)
+                }
             }
         }
+        injectWord()
+
     }, [id, words])
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!isValid) return
         if (id) {
-            const _id = Number(id)
-            updateWord({
-                id: Number(_id),
+            await updateWord(id, {
                 translation,
                 word,
                 tag: selectedTag,
@@ -41,7 +45,8 @@ export default function AddWord() {
             alert('Word Updated');
             router.back();
         } else {
-            addWord({ word, translation, tag: selectedTag })
+            // addWord({ word, translation, tag: selectedTag })
+            createWord({ word, translation, tag: selectedTag })
             alert('Word added!')
             router.back();
         }
@@ -61,6 +66,7 @@ export default function AddWord() {
                         onChangeText={setWord}
                         autoCapitalize='none'
                         autoCorrect={false}
+                        placeholderTextColor={'#ccc'}
                     />
                     <TextInput
                         style={styles.input}
@@ -69,6 +75,7 @@ export default function AddWord() {
                         onChangeText={setTranslation}
                         autoCapitalize='none'
                         autoCorrect={false}
+                        placeholderTextColor={'#ccc'}
                     />
                     <TextInput
                         style={styles.input}
@@ -77,6 +84,7 @@ export default function AddWord() {
                         onChangeText={setHint}
                         autoCapitalize='none'
                         autoCorrect={false}
+                        placeholderTextColor={'#ccc'}
                     />
                     <View style={{ marginBottom: 20 }} />
                     <View style={{ marginBottom: 20 }}>

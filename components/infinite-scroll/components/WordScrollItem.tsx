@@ -3,26 +3,40 @@ import { generateBackgroundColor } from "@/functions/bg-colors";
 import { Word } from "@/types";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Modal, Animated, Dimensions, Button } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Modal, Animated, Dimensions, Button, TouchableWithoutFeedback } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 const { height } = Dimensions.get('screen')
 
 const WordScrollItem = ({ word }: { word: Word }) => {
+    const [showTranslation, setShowTranslation] = useState(false)
     const { bottom } = useSafeAreaInsets()
-    if (word.id === -1) {
+
+    if (word.id === 'END_OF_LIST') {
         return <FinalScrollItem />
     }
 
     if (word)
         return (
-            <View style={[styles.container, { height: height, backgroundColor: generateBackgroundColor(), paddingBottom: bottom }]}>
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-                    <Text style={{ fontSize: 32 }}>{word.word}</Text>
-                </View>
-                <TouchableOpacity onPress={() => router.navigate('/hint')} style={{ alignItems: 'center' }} >
-                    <ThemedText style={{ color: '#000' }} type="link">Hint</ThemedText>
-                </TouchableOpacity>
-            </View>
+            <TouchableWithoutFeedback onPress={() => setShowTranslation(value => !value)}>
+                <View style={[styles.container, { height: height, backgroundColor: generateBackgroundColor(), paddingBottom: bottom }]}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+                        <View>
+                            <Text style={{ fontSize: 32 }}>{word.word}</Text>
+                        </View>
+                        {
+                            showTranslation && (
+                                <View style={{}}>
+                                    <Text style={{ fontSize: 18 }}>{word.translation}</Text>
+                                </View>
+                            )
+                        }
+
+                    </View>
+                    <TouchableOpacity onPress={() => router.navigate('/hint')} style={{ alignItems: 'center' }} >
+                        <ThemedText style={{ color: '#000' }} type="link">Hint</ThemedText>
+                    </TouchableOpacity>
+                </View >
+            </TouchableWithoutFeedback>
         );
 };
 

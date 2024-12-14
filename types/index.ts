@@ -7,13 +7,14 @@ export enum LearningRate {
 }
 
 export interface Word {
-  id: number;
+  id: string;
   word: string;
   translation: string;
   hint?: string;
   tag: string; // Optional property
-  dateAndTimeCreated: number;
-  learningRate: LearningRate;
+  learningRate?: LearningRate;
   timeSpend?: number; // In seconds
   timeStart?: number;
+  visited?: number;
+  dateAndTimeCreated?: number;
 }

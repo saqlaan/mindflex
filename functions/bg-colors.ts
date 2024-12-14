@@ -1,15 +1,14 @@
 export function generateBackgroundColor() {
-  // Generate a random hue (0 to 360 degrees)
-  const hue = Math.floor(Math.random() * 360);
+  // Predefined harmonious and bright HSL colors that contrast well with black text
+  const colors = [
+    "hsla(220, 78.80%, 48.00%, 0.57)", // Blue
+    "hsla(9, 81.10%, 45.70%, 0.48)", // Yellow
+    "hsl(47, 38.70%, 87.80%)", // Green
+    "hsl(43, 4.10%, 66.50%)", // Red
+  ];
 
-  // Set saturation to a high value (colorful)
-  const saturation = 80; // 0 to 100%
+  // Randomly pick one of the predefined colors
+  const randomIndex = Math.floor(Math.random() * colors.length);
 
-  // Randomly select lightness for contrast, ensure it's not too dark or too light for black text
-  const lightness = Math.floor(Math.random() * 40) + 40; // Range from 40 to 80
-
-  // Generate the HSL color
-  const backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-
-  return backgroundColor;
+  return colors[randomIndex];
 }

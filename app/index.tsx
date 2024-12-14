@@ -1,11 +1,12 @@
 import { Link, router, Stack } from 'expo-router';
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCallback } from 'react';
 import { useWordContext } from '@/context/WordsContext';
+import AddWordForm from '@/components/add-word/AddWordForm';
 
 export default function HomeScreen() {
     const { updateWord, resetTimeSpent } = useWordContext()
@@ -19,26 +20,20 @@ export default function HomeScreen() {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-            <ThemedView style={styles.container}>
+            <StatusBar barStyle={"default"} />
+            <View style={styles.container}>
                 <ThemedText darkColor='' type="title">Mindlex</ThemedText>
                 <View style={{
-                    flex: 1, alignItems: 'center',
-                    justifyContent: 'center',
+                    flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 50
                 }}>
-                    <TouchableOpacity style={styles.link} onPress={() => router.navigate('/add-word')}>
-                        <ThemedText type="link">Add words</ThemedText>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.link} onPress={() => router.navigate('/words')}>
-                        <ThemedText type="link">Your words</ThemedText>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.link} onPress={() => router.navigate('/explore')}>
-                        <ThemedText type="link">Visit</ThemedText>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.link} onPress={handleResetTimeSpent}>
-                        <ThemedText type="link">Reset time spend</ThemedText>
-                    </TouchableOpacity>
+                    <AddWordForm />
+
+                    <Button title='Add words' onPress={() => router.navigate('/add-word')} />
+                    <Button title='Your words' onPress={() => router.navigate('/words')} />
+                    <Button title='Visit' onPress={() => router.navigate('/explore')} />
+                    <Button title='Reset time spend' onPress={handleResetTimeSpent} />
                 </View>
-            </ThemedView>
+            </View>
         </SafeAreaView>
     );
 }

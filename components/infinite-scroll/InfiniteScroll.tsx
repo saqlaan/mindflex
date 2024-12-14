@@ -1,20 +1,23 @@
 import { app_data } from '@/data';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, FlatList, Text, StyleSheet, Dimensions, ViewToken } from 'react-native';
 import WordScrollItem from './components/WordScrollItem';
 import { useWordContext } from '@/context/WordsContext';
 import { Word } from '@/types';
 import { prioritizeWords } from '@/core/priority';
+import { readWords, updateWord } from '@/firebase/words/operations';
 
 // Main component
 const InfiniteScroll = () => {
-    const { words, updateWord } = useWordContext();
-
-
+    const { words } = useWordContext();
 
     const renderItem = ({ item }) => {
         return <WordScrollItem word={item} />
     }
+
+    const sortedWords = useMemo(() => {
+        return words.sort((a, b) => (b.timeSpend ?? 0) - (a.timeSpend ?? 0));
+    }, [words])
 
     const { height } = Dimensions.get('window');
 
@@ -26,22 +29,29 @@ const InfiniteScroll = () => {
         changed: (ViewToken & { item: Word })[];
     }) => {
         viewableItems.forEach((item) => {
-            if (item.item.id === -1) return
+            const { id } = item.item
+            if (id === 'END_OF_LIST') return null
             const word = words.find(word => word.id === item.item.id) as Word;
-            updateWord({
+            console.log({ word })
+            updateWord(item.item.id, {
                 ...word,
-                timeStart: Date.now()
+                timeStart: Date.now(),
             });
         });
         changed.forEach((item, index) => {
-            if (item.item.id === -1) return
+            const { id } = item.item
+            if (id === 'END_OF_LIST') return null
             if (!item.isViewable) {
                 const word = words.find(word => word.id === item.item.id) as Word;
-                updateWord({
+                updateWord(item.item.id, {
                     ...word,
-                    timeSpend: (word.timeSpend || 0) + (Date.now() - (word.timeStart || Date.now())),
-                    timeStart: undefined
+                    timeSpend: ((word.timeSpend || 0) + (word.timeStart ? Date.now() - word.timeStart : 0)),
+                    timeStart: 0
                 });
+                console.log({
+                    timeStart: word.timeStart,
+                    spend: Date.now() - (word.timeStart || 0)
+                })
             }
         });
     };
@@ -53,7 +63,7 @@ const InfiniteScroll = () => {
 
     return (
         <FlatList
-            data={[...words, { id: -1 } as Word]}
+            data={[...sortedWords, { id: 'END_OF_LIST' } as Word]}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
             contentContainerStyle={styles.flatListContainer}
@@ -73,11 +83,7 @@ const styles = StyleSheet.create({
 
     },
     itemContainer: {
-        // marginBottom: 15,
-        // padding: 10,
         backgroundColor: '#f4f4f4',
-        // borderRadius: 8,
-        // elevation: 2, // Adds a subtle shadow for Android
     },
     word: {
         fontSize: 18,
