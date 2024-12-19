@@ -6,6 +6,8 @@ export enum LearningRate {
   "HARD" = "HARD",
 }
 
+export type DIFFICULTY_LEVEL = 1 | 2 | 3 | 4 | 5;
+
 export interface Word {
   id: string;
   word: string;
@@ -15,6 +17,7 @@ export interface Word {
   learningRate?: LearningRate;
   timeSpend?: number; // In seconds
   timeStart?: number;
-  visited?: number;
+  visited: number;
   dateAndTimeCreated?: number;
+  difficultyLevel: DIFFICULTY_LEVEL; // higher then level the difficult the word is
 }

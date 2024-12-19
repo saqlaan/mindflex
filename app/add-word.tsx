@@ -45,8 +45,7 @@ export default function AddWord() {
             alert('Word Updated');
             router.back();
         } else {
-            // addWord({ word, translation, tag: selectedTag })
-            createWord({ word, translation, tag: selectedTag })
+            createWord({ word, translation, tag: selectedTag, visited: 0 })
             alert('Word added!')
             router.back();
         }

@@ -1,5 +1,5 @@
 import { Link, router, Stack } from 'expo-router';
-import { Alert, Button, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCallback } from 'react';
 import { useWordContext } from '@/context/WordsContext';
 import AddWordForm from '@/components/add-word/AddWordForm';
+import { Button } from '@ui-kitten/components';
 
 export default function HomeScreen() {
     const { updateWord, resetTimeSpent } = useWordContext()
@@ -28,10 +29,16 @@ export default function HomeScreen() {
                 }}>
                     <AddWordForm />
 
-                    <Button title='Add words' onPress={() => router.navigate('/add-word')} />
-                    <Button title='Your words' onPress={() => router.navigate('/words')} />
-                    <Button title='Visit' onPress={() => router.navigate('/explore')} />
-                    <Button title='Reset time spend' onPress={handleResetTimeSpent} />
+                    <View style={{ flexDirection: 'column', gap: 10 }}>
+                        <Button onPress={() => router.navigate('/add-word')} >
+                            Add words
+                        </Button>
+
+                        <Button onPress={() => router.navigate('/explore')} >New words</Button>
+                        <Button onPress={() => router.navigate('/words')} >Your words</Button>
+                        <Button onPress={() => router.navigate('/explore')} >Visit</Button>
+                        <Button onPress={handleResetTimeSpent} >Reset time spend</Button>
+                    </View>
                 </View>
             </View>
         </SafeAreaView>

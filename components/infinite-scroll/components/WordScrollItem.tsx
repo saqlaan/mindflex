@@ -1,13 +1,15 @@
 import { ThemedText } from "@/components/ThemedText";
+import { updateWord } from "@/firebase/words/operations";
 import { generateBackgroundColor } from "@/functions/bg-colors";
-import { Word } from "@/types";
+import { DIFFICULTY_LEVEL, Word } from "@/types";
+import { Button, ButtonGroup, Layout } from "@ui-kitten/components";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Modal, Animated, Dimensions, Button, TouchableWithoutFeedback } from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, TouchableWithoutFeedback } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 const { height } = Dimensions.get('screen')
 
-const WordScrollItem = ({ word }: { word: Word }) => {
+const WordScrollItem = ({ word, onDifficultyLevelUpdated, index }: { word: Word, onDifficultyLevelUpdated: (value: number) => void, index: number }) => {
     const [showTranslation, setShowTranslation] = useState(false)
     const { bottom } = useSafeAreaInsets()
 
@@ -15,23 +17,47 @@ const WordScrollItem = ({ word }: { word: Word }) => {
         return <FinalScrollItem />
     }
 
+    const selectDifficultyLevel = useCallback((value: DIFFICULTY_LEVEL) => {
+        updateWord(word.id, {
+            difficultyLevel: value
+        })
+        if (onDifficultyLevelUpdated) onDifficultyLevelUpdated(index)
+
+    }, [word]);
+
     if (word)
         return (
             <TouchableWithoutFeedback onPress={() => setShowTranslation(value => !value)}>
-                <View style={[styles.container, { height: height, backgroundColor: generateBackgroundColor(), paddingBottom: bottom }]}>
+                <View style={[styles.container, { height: height, backgroundColor: '#eee', paddingBottom: bottom }]}>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
                         <View>
                             <Text style={{ fontSize: 32 }}>{word.word}</Text>
                         </View>
                         {
                             showTranslation && (
-                                <View style={{}}>
+                                <View>
                                     <Text style={{ fontSize: 18 }}>{word.translation}</Text>
                                 </View>
                             )
                         }
-
                     </View>
+                    <Layout style={{ flexDirection: 'row', backgroundColor: 'tranparent' }}>
+                        <View style={{ alignItems: 'center', flex: 1 }}>
+                            <Text style={{ marginBottom: 10, fontSize: 12 }}>Difficulty Level</Text>
+                            <ButtonGroup
+                                style={styles.buttonGroup}
+                                appearance='outline'
+                            >
+                                {
+                                    [1, 2, 3, 4, 5].map((value, index) => (
+                                        <Button key={index} onPress={() => selectDifficultyLevel(value as DIFFICULTY_LEVEL)}>
+                                            {value}
+                                        </Button>
+                                    ))
+                                }
+                            </ButtonGroup>
+                        </View>
+                    </Layout>
                     <TouchableOpacity onPress={() => router.navigate('/hint')} style={{ alignItems: 'center' }} >
                         <ThemedText style={{ color: '#000' }} type="link">Hint</ThemedText>
                     </TouchableOpacity>
@@ -150,6 +176,10 @@ const styles = StyleSheet.create({
     tapText: {
         color: "#fff",
         fontSize: 16,
+    },
+    buttonGroup: {
+        margin: 2,
+
     },
 });
 

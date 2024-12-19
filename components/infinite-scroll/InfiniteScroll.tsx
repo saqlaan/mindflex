@@ -1,5 +1,5 @@
 import { app_data } from '@/data';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, FlatList, Text, StyleSheet, Dimensions, ViewToken } from 'react-native';
 import WordScrollItem from './components/WordScrollItem';
 import { useWordContext } from '@/context/WordsContext';
@@ -10,9 +10,21 @@ import { readWords, updateWord } from '@/firebase/words/operations';
 // Main component
 const InfiniteScroll = () => {
     const { words } = useWordContext();
+    const flatListRef = useRef<FlatList>(null);
+    const currentIndex = useRef(0);
 
-    const renderItem = ({ item }) => {
-        return <WordScrollItem word={item} />
+    const moveToNextItem = useCallback((index: number) => {
+        console.log({ index })
+        flatListRef.current?.scrollToOffset({ offset: height * (index + 1), animated: true })
+        // if (currentIndex.current < data.length - 1) {
+
+
+        //     // flatListRef.current?.scrollToIndex({ index: currentIndex.current, animated: true });
+        // }
+    }, [])
+
+    const renderItem = ({ item, index }) => {
+        return <WordScrollItem word={item} onDifficultyLevelUpdated={moveToNextItem} index={index} />
     }
 
     const sortedWords = useMemo(() => {
@@ -32,29 +44,32 @@ const InfiniteScroll = () => {
             const { id } = item.item
             if (id === 'END_OF_LIST') return null
             const word = words.find(word => word.id === item.item.id) as Word;
-            console.log({ word })
+            console.log({ word });
             updateWord(item.item.id, {
                 ...word,
-                timeStart: Date.now(),
+                visited: word.visited + 1,
             });
+
         });
-        changed.forEach((item, index) => {
-            const { id } = item.item
-            if (id === 'END_OF_LIST') return null
-            if (!item.isViewable) {
-                const word = words.find(word => word.id === item.item.id) as Word;
-                updateWord(item.item.id, {
-                    ...word,
-                    timeSpend: ((word.timeSpend || 0) + (word.timeStart ? Date.now() - word.timeStart : 0)),
-                    timeStart: 0
-                });
-                console.log({
-                    timeStart: word.timeStart,
-                    spend: Date.now() - (word.timeStart || 0)
-                })
-            }
-        });
+        // changed.forEach((item, index) => {
+        //     const { id } = item.item
+        //     if (id === 'END_OF_LIST') return null
+        //     if (!item.isViewable) {
+        //         const word = words.find(word => word.id === item.item.id) as Word;
+        //         updateWord(item.item.id, {
+        //             ...word,
+        //             timeSpend: ((word.timeSpend || 0) + (word.timeStart ? Date.now() - word.timeStart : 0)),
+        //             timeStart: 0
+        //         });
+        //         console.log({
+        //             timeStart: word.timeStart,
+        //             spend: Date.now() - (word.timeStart || 0)
+        //         })
+        //     }
+        // });
     };
+
+
 
     const viewabilityConfig = {
         waitForInteraction: false, // Optional: To ensure the item is being actively interacted with
@@ -63,6 +78,7 @@ const InfiniteScroll = () => {
 
     return (
         <FlatList
+            ref={flatListRef}
             data={[...sortedWords, { id: 'END_OF_LIST' } as Word]}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
@@ -73,6 +89,7 @@ const InfiniteScroll = () => {
             decelerationRate="fast" // Faster deceleration for smoother snapping
             onViewableItemsChanged={onViewableItemsChanged}
             viewabilityConfig={viewabilityConfig}
+        // scrollEnabled={false}
         />
     );
 };
