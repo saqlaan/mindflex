@@ -1,29 +1,21 @@
 import { ThemedText } from "@/components/ThemedText";
 import { updateWord } from "@/firebase/words/operations";
-import { generateBackgroundColor } from "@/functions/bg-colors";
-import { DIFFICULTY_LEVEL, Word } from "@/types";
-import { Button, ButtonGroup, Layout } from "@ui-kitten/components";
+import { generateBackgroundColor } from "@/lib/functions/bg-colors";
+import { Word } from "@/types";
+
 import { router } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, {  useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, TouchableWithoutFeedback } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {  useSafeAreaInsets } from "react-native-safe-area-context";
 const { height } = Dimensions.get('screen')
 
-const WordScrollItem = ({ word, onDifficultyLevelUpdated, index }: { word: Word, onDifficultyLevelUpdated: (value: number) => void, index: number }) => {
+const WordScrollItem = ({ word }: { word: Word}) => {
     const [showTranslation, setShowTranslation] = useState(false)
     const { bottom } = useSafeAreaInsets()
 
     if (word.id === 'END_OF_LIST') {
         return <FinalScrollItem />
     }
-
-    const selectDifficultyLevel = useCallback((value: DIFFICULTY_LEVEL) => {
-        updateWord(word.id, {
-            difficultyLevel: value
-        })
-        if (onDifficultyLevelUpdated) onDifficultyLevelUpdated(index)
-
-    }, [word]);
 
     if (word)
         return (
@@ -41,23 +33,6 @@ const WordScrollItem = ({ word, onDifficultyLevelUpdated, index }: { word: Word,
                             )
                         }
                     </View>
-                    <Layout style={{ flexDirection: 'row', backgroundColor: 'tranparent' }}>
-                        <View style={{ alignItems: 'center', flex: 1 }}>
-                            <Text style={{ marginBottom: 10, fontSize: 12 }}>Difficulty Level</Text>
-                            <ButtonGroup
-                                style={styles.buttonGroup}
-                                appearance='outline'
-                            >
-                                {
-                                    [1, 2, 3, 4, 5].map((value, index) => (
-                                        <Button key={index} onPress={() => selectDifficultyLevel(value as DIFFICULTY_LEVEL)}>
-                                            {value}
-                                        </Button>
-                                    ))
-                                }
-                            </ButtonGroup>
-                        </View>
-                    </Layout>
                     <TouchableOpacity onPress={() => router.navigate('/hint')} style={{ alignItems: 'center' }} >
                         <ThemedText style={{ color: '#000' }} type="link">Hint</ThemedText>
                     </TouchableOpacity>

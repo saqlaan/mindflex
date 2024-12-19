@@ -1,14 +1,15 @@
 import InfiniteScroll from "@/components/infinite-scroll/InfiniteScroll";
 import { ThemedText } from "@/components/ThemedText";
+import { EXPLORE, EXPLORE_WORDS_TYPE } from "@/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal, Animated, Dimensions, Button } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Explore = () => {
     const { top } = useSafeAreaInsets()
-
+    const { type } = useGlobalSearchParams<{ type: EXPLORE_WORDS_TYPE }>()
     return (
         <View>
             <TouchableOpacity
@@ -17,7 +18,7 @@ const Explore = () => {
             >
                 <Ionicons name="chevron-back-outline" size={26} color="black" />
             </TouchableOpacity>
-            <InfiniteScroll />
+            <InfiniteScroll type={type}/>
         </View>
 
     );

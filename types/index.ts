@@ -18,6 +18,14 @@ export interface Word {
   timeSpend?: number; // In seconds
   timeStart?: number;
   visited: number;
-  dateAndTimeCreated?: number;
+  createdOn?: string;
+  lastVisitedOn?: string;
+  nextReviewOn?: string;
   difficultyLevel: DIFFICULTY_LEVEL; // higher then level the difficult the word is
 }
+
+export enum EXPLORE {
+  "REVIEW" = "REVIEW",
+  "NEW" = "NEW",
+}
+export type EXPLORE_WORDS_TYPE = EXPLORE;

@@ -9,6 +9,7 @@ import {
   deleteDoc,
   setDoc,
   onSnapshot,
+  where,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { Word } from "@/types";
@@ -22,7 +23,7 @@ export const createWord = async (wordData: Omit<Word, "id">): Promise<void> => {
     const wordWithMetadata: Word = {
       ...wordData,
       id,
-      dateAndTimeCreated: Date.now(),
+      createdOn: new Date().toISOString(),
     };
     // Use `setDoc` to add the document with the predefined id
     await setDoc(docRef, wordWithMetadata);
@@ -54,7 +55,6 @@ export const updateWord = async (
   try {
     const docRef = doc(db, "words", id);
     await updateDoc(docRef, updatedData);
-    console.log("Word updated successfully");
   } catch (e) {
     console.error("Error updating word: ", e);
   }
@@ -76,10 +76,7 @@ export const deleteWord = async (id: string): Promise<void> => {
  * @returns Unsubscribe function to stop listening to updates.
  */
 export const subscribeToWords = (onData: (words: Word[]) => void) => {
-  const q = query(
-    collection(db, "words"),
-    orderBy("dateAndTimeCreated", "desc")
-  );
+  const q = query(collection(db, "words"));
 
   // Subscribe to real-time updates
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -94,4 +91,75 @@ export const subscribeToWords = (onData: (words: Word[]) => void) => {
   });
 
   return unsubscribe;
+};
+
+/**
+ * Subscribes to real-time updates for the "words" collection.
+ * @param onData - Callback function to handle the live data.
+ * @returns Unsubscribe function to stop listening to updates.
+ */
+export const subscribeToNewWords = (onData: (words: Word[]) => void) => {
+  const q = query(collection(db, "words"), where("visited", "==", 0));
+
+  // Subscribe to real-time updates
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const liveWords: Word[] = querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as Word)
+    );
+    onData(liveWords); // Pass data to the callback
+  });
+
+  return unsubscribe;
+};
+
+export const subscribeReviewNewWords = (onData: (words: Word[]) => void) => {
+  const q = query(collection(db, "words"), where("visited", "==", 0));
+
+  // Subscribe to real-time updates
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const liveWords: Word[] = querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        }) as Word
+    );
+    onData(liveWords); // Pass data to the callback
+  });
+
+  return unsubscribe;
+};
+
+export const fetchWordsWithUpcomingReviews = async (): Promise<Word[]> => {
+
+  const dateTimeNow = new Date();
+  // Create a query that filters for words where 'nextReviewOn' is greater than the current time
+  const wordsRef = collection(db, "words"); // Replace with your Firestore collection name
+  const q = query(
+    wordsRef,
+    where("nextReviewOn", "<", dateTimeNow.toISOString())
+  );
+
+  try {
+    // Fetch the documents once using `getDocs`
+    const querySnapshot = await getDocs(q);
+
+    // Process the documents and return them as an array of Word objects
+    const liveWords: Word[] = querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        }) as Word
+    );
+    console.log({liveWords})
+    return liveWords;
+  } catch (error) {
+    console.error("Error fetching words:", error);
+    return [];
+  }
 };

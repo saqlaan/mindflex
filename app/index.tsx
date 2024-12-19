@@ -1,5 +1,5 @@
-import { Link, router, Stack } from 'expo-router';
-import { Alert, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Link, router, Stack, useFocusEffect } from 'expo-router';
+import { Alert, StatusBar, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -8,10 +8,21 @@ import { useCallback } from 'react';
 import { useWordContext } from '@/context/WordsContext';
 import AddWordForm from '@/components/add-word/AddWordForm';
 import { Button } from '@ui-kitten/components';
+import { EXPLORE } from '@/types';
 
 export default function HomeScreen() {
-    const { updateWord, resetTimeSpent } = useWordContext()
+    const { updateWord, resetTimeSpent,newWords, words, reviewWords, refreshReviewWords } = useWordContext()
 
+    useFocusEffect(
+        useCallback(() => {
+            refreshReviewWords()
+
+            return () => {
+                console.log("Screen is out of focus");
+            };
+        }, [])
+    );
+    
     const handleResetTimeSpent = useCallback(() => {
         Alert.alert("Reset time spend", "Are you sure you want to the state of the words?", [
             { text: "Cancel", style: "cancel" },
@@ -34,9 +45,10 @@ export default function HomeScreen() {
                             Add words
                         </Button>
 
-                        <Button onPress={() => router.navigate('/explore')} >New words</Button>
-                        <Button onPress={() => router.navigate('/words')} >Your words</Button>
-                        <Button onPress={() => router.navigate('/explore')} >Visit</Button>
+                        <Button onPress={() => router.navigate(`/explore?type=${EXPLORE.NEW}`)}>New words {newWords.length}</Button>
+                        <Button onPress={() => router.navigate('/words')} >Your words {words.length}</Button>
+                        <Button onPress={() => router.navigate(`/explore?type=${EXPLORE.REVIEW}`)}>Review {reviewWords.length}</Button>
+                        <Text>All words {words.length}</Text>
                         <Button onPress={handleResetTimeSpent} >Reset time spend</Button>
                     </View>
                 </View>

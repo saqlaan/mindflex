@@ -1,0 +1,37 @@
+{
+    "eslint.debug": true,
+    "eslint.format.enable": true,
+    "eslint.lintTask.enable": true,
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "html",
+        "typescriptreact"
+    ],
+    "npm.packageManager": "npm",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.formatOnSave": false,
+    "editor.formatOnSaveMode": "modifications",
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "never",
+        "source.fixAll.eslint": "always"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "prettier.enable": true,
+    "stylelint.enable": true,
+    "css.validate": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "eslint.nodeEnv": "",
+    "workbench.iconTheme": "material-icon-theme",
+    "extensions.ignoreRecommendations": true,
+    "github.copilot.editor.enableAutoCompletions": true,
+    "eslint.execArgv": ["--max_old_space_size=4096"],
+    "eslint.workingDirectories": ["./"],
+    "tailwindCSS.experimental.classRegex": [
+        ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+        ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+    ]
+}
