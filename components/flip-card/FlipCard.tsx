@@ -88,7 +88,7 @@ const FlipCard: React.FC<FlipCardProps> = ({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        top: Platform.OS === "ios"? 100: 100,
+        top: Platform.OS === "ios"? 30: 50,
         // justifyContent: 'center',
         alignItems: 'center',
     },
