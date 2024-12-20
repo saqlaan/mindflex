@@ -8,6 +8,7 @@ import {
     ViewStyle,
     TextStyle,
     Dimensions,
+    Platform,
 } from 'react-native';
 import Animated, {
     useAnimatedStyle,
@@ -85,7 +86,8 @@ const FlipCard: React.FC<FlipCardProps> = ({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        top: Platform.OS === "ios"? 200: 100,
+        // justifyContent: 'center',
         alignItems: 'center',
     },
     cardContainer: {

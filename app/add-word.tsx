@@ -46,6 +46,7 @@ export default function AddWord() {
             router.back();
         } else {
             createWord({ word, translation, tag: selectedTag, visited: 0 })
+            createWord({ translation, word, tag: selectedTag, visited: 0 })
             setMessage("Word added successfully")
             resetForm();
             setTimeout(() => {

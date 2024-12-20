@@ -25,6 +25,7 @@ export const createWord = async (wordData: Omit<Word, "id">): Promise<void> => {
       id,
       createdOn: new Date().toISOString(),
     };
+    
     // Use `setDoc` to add the document with the predefined id
     await setDoc(docRef, wordWithMetadata);
   } catch (e) {

@@ -14,6 +14,7 @@ import { updateWord } from "@/firebase/words/operations";
 import { computeNextReviewDateTime } from "@/lib/functions/next-review-date-time";
 import { CircularButton } from "../circular-button/CircularButton";
 import Feather from "@expo/vector-icons/Feather";
+import { shuffleWords } from "@/lib/functions/shuffle-words";
 
 const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
   const { words, newWords, reviewWords } = useWordContext();
@@ -27,11 +28,11 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
 
   useEffect(() => {
     if (type === EXPLORE.NEW) {
-      setVisitWords(newWords);
+      setVisitWords(shuffleWords(newWords));
     } else if (type === EXPLORE.REVIEW) {
-      setVisitWords(reviewWords);
+      setVisitWords(shuffleWords(reviewWords));
     } else if (type === EXPLORE.ALL) {
-      setVisitWords(words);
+      setVisitWords(shuffleWords(words));
     }
   }, [type]);
 
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
   difficultyLayout: {
     flexDirection: "row",
     position: "absolute",
-    bottom: 100,
+    bottom: 50,
     backgroundColor: "transparent",
   },
   buttonContainer: {

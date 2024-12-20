@@ -33,6 +33,11 @@ export default function TabLayout() {
                         paddingTop: 10,
                         paddingBottom: 0
                     },
+                    android: {
+                        backgroundColor: 'rgba(0,0,0,1)',
+                        height:70,
+                        paddingTop:5,
+                    }
                 }),
             }}>
 

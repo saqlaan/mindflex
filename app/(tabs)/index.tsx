@@ -8,10 +8,11 @@ import {
     ScrollView,
     Image,
     RefreshControl,
+    Platform,
 } from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCallback, useState } from "react";
 import { useWordContext } from "@/context/WordsContext";
 import AddWordForm from "@/components/add-word/AddWordForm";
@@ -31,6 +32,7 @@ export default function index() {
     } = useWordContext();
     const [refreshing, setRefreshing] = useState(false);
 
+    const {bottom} =useSafeAreaInsets()
 
     useFocusEffect(
         useCallback(() => {
@@ -73,7 +75,7 @@ export default function index() {
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
             <View style={{ flex: 1, padding: 20 }}>
-                <StatusBar barStyle={"default"} />
+                <StatusBar barStyle={Platform.OS === "ios"? "default": "dark-content"} />
                 <View
                     style={{
                         flexDirection: "row",
@@ -90,7 +92,7 @@ export default function index() {
                     style={{
                         flex: 1,
                         justifyContent: "space-between",
-                        paddingBottom: 70,
+                            paddingBottom: bottom + 20,
                     }}
                 >
                     <View>
