@@ -12,6 +12,8 @@ import { useWordContext } from "@/context/WordsContext";
 import { DIFFICULTY_LEVEL, EXPLORE, EXPLORE_WORDS_TYPE, Word } from "@/types";
 import { updateWord } from "@/firebase/words/operations";
 import { computeNextReviewDateTime } from "@/lib/functions/next-review-date-time";
+import { CircularButton } from "../circular-button/CircularButton";
+import Feather from "@expo/vector-icons/Feather";
 
 const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
   const { words, newWords, reviewWords } = useWordContext();
@@ -28,6 +30,8 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
       setVisitWords(newWords);
     } else if (type === EXPLORE.REVIEW) {
       setVisitWords(reviewWords);
+    } else if (type === EXPLORE.ALL) {
+      setVisitWords(words);
     }
   }, [type]);
 
@@ -44,10 +48,10 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
       const { id, visited } = item.item;
       setFocusedItem({ word: item.item, index: item.index });
       if (id !== "END_OF_LIST") return;
-    //   TODO: WILL see what we can do about the visited only without selecting the difficulty level
-    //   const word = words.find((word) => word.id === item.item.id) as Word;
-    //   if (!word) return;
-    //   updateWord(id, { ...word, visited: visited + 1 });
+      //   TODO: WILL see what we can do about the visited only without selecting the difficulty level
+      //   const word = words.find((word) => word.id === item.item.id) as Word;
+      //   if (!word) return;
+      //   updateWord(id, { ...word, visited: visited + 1 });
     });
   };
 
@@ -89,22 +93,54 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
         decelerationRate="fast"
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
-        scrollEnabled={false}
+        scrollEnabled={type !== EXPLORE.ALL ? false : true}
       />
-      {focusedItem?.word.id !== "END_OF_LIST" && (
+      {type !== EXPLORE.ALL && focusedItem?.word.id !== "END_OF_LIST" && (
         <Layout style={styles.difficultyLayout}>
           <View style={styles.buttonContainer}>
-            <Text style={styles.difficultyLabel}>Difficulty Level</Text>
-            <ButtonGroup appearance="outline" style={styles.buttonGroup}>
-              {[1, 2, 3, 4, 5].map((value) => (
-                <Button
-                  key={value}
-                  onPress={() => onSelectDifficultyLevel(value)}
-                >
-                  {value}
-                </Button>
-              ))}
-            </ButtonGroup>
+            <Text style={styles.difficultyLabel}>Select Difficulty Level</Text>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <CircularButton
+                number={1}
+                text="3 days"
+                onPress={() => onSelectDifficultyLevel(1)}
+                backgroundColor="#73EA85"
+              />
+              <CircularButton
+                number={2}
+                text="1 day"
+                onPress={() => onSelectDifficultyLevel(2)}
+                backgroundColor="#4ED570"
+              />
+              <CircularButton
+                number={3}
+                text="10 mins"
+                onPress={() => onSelectDifficultyLevel(3)}
+                backgroundColor="#1DB954"
+
+              />
+              <CircularButton
+                number={4}
+                text="5 mins"
+                onPress={() => onSelectDifficultyLevel(4)}
+                backgroundColor="#0E854F"
+              />
+              <CircularButton
+                number={5}
+                text="30 sec"
+                onPress={() => onSelectDifficultyLevel(5)}
+                backgroundColor="#096B48"
+              />
+            </View>
+          </View>
+        </Layout>
+      )}
+      {type === EXPLORE.ALL && focusedItem?.word.id !== "END_OF_LIST" && (
+        <Layout style={styles.difficultyLayout}>
+          <View style={styles.buttonContainer}>
+            <Text style={styles.difficultyLabel}></Text>
+            <Feather color={"#B3B3B3"} name="chevron-up" size={18}></Feather>
+            <Feather color="#B3B3B3" name="chevron-down" size={18}></Feather>
           </View>
         </Layout>
       )}

@@ -11,7 +11,7 @@ const Explore = () => {
     const { top } = useSafeAreaInsets()
     const { type } = useGlobalSearchParams<{ type: EXPLORE_WORDS_TYPE }>()
     return (
-        <View>
+        <View style={{backgroundColor: '#fff'}}>
             <TouchableOpacity
                 style={{ position: 'absolute', top: top, left: 20, zIndex: 100 }}
                 onPress={() => router.back()}
@@ -37,11 +37,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backfaceVisibility: "hidden",
         borderRadius: 10,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        
     },
     cardBack: {
         position: "absolute",

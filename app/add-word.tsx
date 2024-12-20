@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { TextInput, Button, StyleSheet, View, FlatList, TouchableOpacity } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { TextInput, StyleSheet, View, FlatList, TouchableOpacity, Button } from 'react-native';
 
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { useWordContext } from '@/context/WordsContext';
 import { router, useGlobalSearchParams } from 'expo-router';
 import Header from '@/components/header/Header';
 import { createWord, readWords, updateWord } from '@/firebase/words/operations';
+import { Text, useTheme } from '@ui-kitten/components';
+import { showMessage } from 'react-native-flash-message';
 
 
 export default function AddWord() {
@@ -15,9 +15,10 @@ export default function AddWord() {
     const [translation, setTranslation] = useState('');
     const [hint, setHint] = useState('');
     const [selectedTag, setSelectedTag] = useState('')
-    const { words, tags } = useWordContext()
+    const { words, tags } = useWordContext();
+    const [message, setMessage]= useState<string | null>(null)
     const isValid = word !== "" && translation !== "" && selectedTag !== ""
-
+    const theme = useTheme();
     useEffect(() => {
         async function injectWord() {
             if (id) {
@@ -42,22 +43,30 @@ export default function AddWord() {
                 word,
                 tag: selectedTag,
             })
-            alert('Word Updated');
             router.back();
         } else {
             createWord({ word, translation, tag: selectedTag, visited: 0 })
-            alert('Word added!')
-            router.back();
+            setMessage("Word added successfully")
+            resetForm();
+            setTimeout(() => {
+                setMessage(null)
+            }, 3000)
+            // router.back();
         }
     };
 
+    const resetForm = useCallback(() => {
+        setWord('')
+        setTranslation('');
+        setSelectedTag('German A1')
+    }, [])
+
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
-            <Header title='' headerType={"MODAL"} />
+            <Header hasBackButton={true} title={`${id ? 'Update' : 'Add'} new word`} headerType={"MODAL"} />
             <View style={styles.container}>
-                <ThemedText type="title">{id ? 'Update' : 'Add'} your word here</ThemedText>
                 {/* Input for the word */}
-                <View style={{ flex: 1, paddingTop: 50 }}>
+                <View style={{ flex: 1, paddingTop: 20 }}>
                     <TextInput
                         style={styles.input}
                         placeholder="Type your word here"
@@ -76,7 +85,7 @@ export default function AddWord() {
                         autoCorrect={false}
                         placeholderTextColor={'#ccc'}
                     />
-                    <TextInput
+                    {/* <TextInput
                         style={styles.input}
                         placeholder="Any hint"
                         value={hint}
@@ -84,23 +93,30 @@ export default function AddWord() {
                         autoCapitalize='none'
                         autoCorrect={false}
                         placeholderTextColor={'#ccc'}
-                    />
+                    /> */}
                     <View style={{ marginBottom: 20 }} />
                     <View style={{ marginBottom: 20 }}>
                         <FlatList
                             data={tags}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
-                                <TouchableOpacity style={[styles.tag, selectedTag === item && { backgroundColor: '#ccc' }]} onPress={() => setSelectedTag(item)}>
-                                    <ThemedText>{item}</ThemedText>
+                                <TouchableOpacity style={[styles.tag, selectedTag === item && { backgroundColor: '#000' }]} onPress={() => setSelectedTag(item)}>
+                                    <Text style={{ color: theme['color-secondary-text'] }}>{item}</Text>
                                 </TouchableOpacity>
                             )}
                             horizontal
                             showsHorizontalScrollIndicator={false}
                         />
                     </View>
-                    <Button disabled={!isValid} title="Save" onPress={handleSave} />
+                    <Text style={{ color: '#B3B3B3'}}>{message}</Text>
+                    <View style={{ marginTop: 20 }}>
+                        <Button color={'#000'} title='Save' disabled={!isValid} onPress={handleSave}>
+                        </Button>
+                    </View>
                 </View>
+
+
+
             </View >
         </View>
     );
@@ -111,13 +127,14 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         padding: 20,
+        paddingTop: 5,
         backgroundColor: '#fff'
     },
     input: {
         width: '100%',
         height: 50,
         borderColor: '#ccc',
-        borderBottomWidth: 1,
+        borderWidth: 1,
         borderRadius: 10,
         paddingHorizontal: 10,
         marginVertical: 10,
@@ -132,7 +149,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
     },
     tag: {
-        backgroundColor: '#eee',
+        backgroundColor: '#B3B3B3',
         paddingVertical: 10,
         paddingHorizontal: 15,
         borderRadius: 20,

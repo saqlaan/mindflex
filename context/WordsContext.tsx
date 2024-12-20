@@ -45,6 +45,7 @@ export const WordProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const fetchReviewWords = async () => {
         const words = await fetchWordsWithUpcomingReviews();
+        console.log(words)
         await setReviewWords(words)
     }
 

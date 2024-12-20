@@ -27,5 +27,6 @@ export interface Word {
 export enum EXPLORE {
   "REVIEW" = "REVIEW",
   "NEW" = "NEW",
+  "ALL" = "ALL",
 }
 export type EXPLORE_WORDS_TYPE = EXPLORE;

@@ -1,15 +1,17 @@
+import FlipCard from "@/components/flip-card/FlipCard";
 import { ThemedText } from "@/components/ThemedText";
 import { updateWord } from "@/firebase/words/operations";
 import { generateBackgroundColor } from "@/lib/functions/bg-colors";
 import { Word } from "@/types";
 
 import { router } from "expo-router";
-import React, {  useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, TouchableWithoutFeedback } from "react-native";
-import {  useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useState } from "react";
+import { View, TouchableOpacity, StyleSheet, Dimensions, TouchableWithoutFeedback } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 const { height } = Dimensions.get('screen')
+import { Text } from "@ui-kitten/components";
 
-const WordScrollItem = ({ word }: { word: Word}) => {
+const WordScrollItem = ({ word }: { word: Word }) => {
     const [showTranslation, setShowTranslation] = useState(false)
     const { bottom } = useSafeAreaInsets()
 
@@ -20,22 +22,8 @@ const WordScrollItem = ({ word }: { word: Word}) => {
     if (word)
         return (
             <TouchableWithoutFeedback onPress={() => setShowTranslation(value => !value)}>
-                <View style={[styles.container, { height: height, backgroundColor: '#eee', paddingBottom: bottom }]}>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-                        <View>
-                            <Text style={{ fontSize: 32 }}>{word.word}</Text>
-                        </View>
-                        {
-                            showTranslation && (
-                                <View>
-                                    <Text style={{ fontSize: 18 }}>{word.translation}</Text>
-                                </View>
-                            )
-                        }
-                    </View>
-                    <TouchableOpacity onPress={() => router.navigate('/hint')} style={{ alignItems: 'center' }} >
-                        <ThemedText style={{ color: '#000' }} type="link">Hint</ThemedText>
-                    </TouchableOpacity>
+                <View style={[styles.container, { height: height, backgroundColor: '#fff', paddingBottom: bottom, position:'relative' }]}>
+                    <FlipCard frontText={word.word} backText={word.translation}/>
                 </View >
             </TouchableWithoutFeedback>
         );
@@ -44,11 +32,14 @@ const WordScrollItem = ({ word }: { word: Word}) => {
 export const FinalScrollItem = () => {
     const { bottom } = useSafeAreaInsets()
     return (
-        <View style={[styles.container, { height: height, backgroundColor: generateBackgroundColor(), paddingBottom: bottom }]}>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-                <Text style={{ fontSize: 32, textAlign: 'center', marginBottom: 20 }}>You have finished your words for today</Text>
-                <TouchableOpacity onPress={() => router.back()} style={{ alignItems: 'center' }} >
-                    <Text style={{ fontSize: 26 }}>Go back</Text>
+        <View style={[styles.container, { height: height, paddingBottom: bottom }]}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <Text style={{fontSize: 16, marginBottom: 20}}>You have finished your words for now</Text>
+
+                <TouchableOpacity
+                    onPress={() => router.back()}
+                >
+                    <Text style={{ fontSize: 14}}>Return</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -58,7 +49,7 @@ export const FinalScrollItem = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: "#fff",
     },
     card: {
         width: 300,
@@ -68,11 +59,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backfaceVisibility: "hidden",
         borderRadius: 10,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
     },
     cardBack: {
         position: "absolute",
