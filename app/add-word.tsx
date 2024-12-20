@@ -110,9 +110,27 @@ export default function AddWord() {
                         />
                     </View>
                     <Text style={{ color: '#B3B3B3'}}>{message}</Text>
-                    <View style={{ marginTop: 20 }}>
-                        <Button color={'#000'} title='Save' disabled={!isValid} onPress={handleSave}>
-                        </Button>
+                    <View style={{ marginTop: 10, alignItems: 'center' }}>
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: isValid ? "#1DB954" : "#A4F8A9",
+                                paddingVertical: 20,
+                                paddingHorizontal: 20,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                borderRadius: 20,
+                                flexDirection: 'row',
+                                gap: 5,
+                                width: 200
+                            }}
+                            onPress={isValid? handleSave: () => null}
+                        >
+
+                            <Text style={{ color: "#fff", fontWeight: "500" }}>Save</Text>
+                            
+                        </TouchableOpacity>
+                        {/* <Button color={'#000'} title='Save' disabled={!isValid} onPress={handleSave}>
+                        </Button> */}
                     </View>
                 </View>
 

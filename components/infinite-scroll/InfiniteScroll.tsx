@@ -80,6 +80,10 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
     viewAreaCoveragePercentThreshold: 100,
   };
 
+  const fetchMoreWords = useCallback(() => {
+    console.log('fetchMoreItem')
+  }, [])
+
   return (
     <View style={{flex:1, position:'relative'}}>
       <FlatList
@@ -95,6 +99,8 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
         scrollEnabled={type !== EXPLORE.ALL ? false : true}
+        onEndReached={fetchMoreWords}
+        onEndReachedThreshold={0.1}
       />
       {type !== EXPLORE.ALL && focusedItem?.word.id !== "END_OF_LIST" && (
         <Layout style={styles.difficultyLayout}>

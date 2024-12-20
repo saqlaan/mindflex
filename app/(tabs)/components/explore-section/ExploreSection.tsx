@@ -48,11 +48,11 @@ export const ExploreSection =()=>  {
                 />
                 <HomeCard
                     title={words.length > 0 ? "New words" : "Please add words"}
-                    // bgColor="#333"
+                    bgColor="#73EA85"
                     value={newWords.length}
                     textColor="#333"
                     onPress={words.length > 0 ? () => router.navigate(`/explore?type=${EXPLORE.NEW}`) : () => null}
-                    icon={<Ionicons name="sparkles-outline" size={32} color={'#1DB954'} />}
+                    icon={<Ionicons name="sparkles-outline" size={32} color={'#055843'} />}
                 />
             </View>
         </View>

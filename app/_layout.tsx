@@ -10,9 +10,9 @@ import React from 'react';
 
 
 export default function RootLayout() {
-    console.log = () => { };
-    console.warn = () => { };
-    console.error = () => { };
+    // console.log = () => { };
+    // console.warn = () => { };
+    // console.error = () => { };
     // if (__DEV__) {
     //     console.log = () => { };
     //     console.warn = () => { };
