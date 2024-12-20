@@ -75,7 +75,7 @@ export default function index() {
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
             <View style={{ flex: 1, padding: 20 }}>
-                <StatusBar barStyle={Platform.OS === "ios"? "default": "dark-content"} />
+                <StatusBar barStyle={Platform.OS === "ios"? "light-contents": "dark-content"} />
                 <View
                     style={{
                         flexDirection: "row",
