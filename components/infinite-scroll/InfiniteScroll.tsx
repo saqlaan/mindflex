@@ -81,7 +81,7 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
   };
 
   return (
-    <View>
+    <View style={{flex:1, position:'relative'}}>
       <FlatList
         ref={flatListRef}
         data={[...visitWords, { id: "END_OF_LIST" } as Word]}
@@ -103,34 +103,34 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
             <View style={{ flexDirection: "row", gap: 10 }}>
               <CircularButton
                 number={1}
-                text="3 days"
+                text="Easy"
                 onPress={() => onSelectDifficultyLevel(1)}
-                backgroundColor="#73EA85"
+                backgroundColor="#4CAF50"
               />
               <CircularButton
                 number={2}
-                text="1 day"
+                text="Moderate"
                 onPress={() => onSelectDifficultyLevel(2)}
-                backgroundColor="#4ED570"
+                backgroundColor="#CDDC39"
               />
               <CircularButton
                 number={3}
-                text="10 mins"
+                text="Intermediate"
                 onPress={() => onSelectDifficultyLevel(3)}
-                backgroundColor="#1DB954"
+                backgroundColor="#FFC107"
 
               />
               <CircularButton
                 number={4}
-                text="5 mins"
+                text="Challenging"
                 onPress={() => onSelectDifficultyLevel(4)}
-                backgroundColor="#0E854F"
+                backgroundColor="#FF5722"
               />
               <CircularButton
                 number={5}
-                text="30 sec"
+                text="Difficult"
                 onPress={() => onSelectDifficultyLevel(5)}
-                backgroundColor="#096B48"
+                backgroundColor="#F44336"
               />
             </View>
           </View>
@@ -151,7 +151,8 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
 
 // Styles
 const styles = StyleSheet.create({
-  flatListContainer: {},
+  flatListContainer: {
+  },
   difficultyLayout: {
     flexDirection: "row",
     position: "absolute",
@@ -164,7 +165,8 @@ const styles = StyleSheet.create({
   },
   difficultyLabel: {
     marginBottom: 10,
-    fontSize: 12,
+    fontSize: 11,
+    color: 'grey'
   },
   buttonGroup: {
     margin: 2,

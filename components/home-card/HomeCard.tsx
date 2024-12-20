@@ -7,21 +7,27 @@ interface HomeCardProps {
     textColor?: string;
     bgColor?: string;
     onPress: () => void;
+    icon: React.ReactNode;
 }
 
-const HomeCard: React.FC<HomeCardProps> = ({ title, value, textColor, bgColor, onPress }) => {
+const HomeCard: React.FC<HomeCardProps> = ({ title, value, textColor, bgColor, onPress, icon }) => {
     return (
         <TouchableOpacity style={{ flex: 1 }} onPress={onPress}>
             <View style={[styles.card, bgColor && { backgroundColor: bgColor }]}>
-                <View style={styles.header}>
-                    <Text style={[textColor && { color: textColor }, {fontWeight: '500'}]}>{title}</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                {icon}
                     {
                         value && (
                             <View style={styles.iconContainer}>
                                 <Text>{value}</Text>
                             </View>
-                        ) 
+                        )
                     }
+                </View>
+                <View style={styles.header}>
+                    
+                    <Text style={[textColor && { color: textColor }, {fontWeight: '500'}]}>{title}</Text>
+                    
                 </View>
             </View>
         </TouchableOpacity>

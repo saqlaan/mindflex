@@ -37,10 +37,23 @@ export const FinalScrollItem = () => {
                 <Text style={{fontSize: 16, marginBottom: 20}}>You have finished your words for now</Text>
 
                 <TouchableOpacity
+                    style={{
+                        backgroundColor: "#1DB954",
+                        paddingVertical: 20,
+                        paddingHorizontal: 20,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 20,
+                        flexDirection: 'row',
+                        gap: 5
+                    }}
                     onPress={() => router.back()}
                 >
-                    <Text style={{ fontSize: 14}}>Return</Text>
+
+                    <Text style={{ color: "#fff", fontWeight: "500" }}>Go back</Text>
+
                 </TouchableOpacity>
+                
             </View>
         </View>
     )
@@ -49,12 +62,11 @@ export const FinalScrollItem = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
     },
     card: {
         width: 300,
         height: 200,
-        backgroundColor: "#fff",
+
         justifyContent: "center",
         alignItems: "center",
         backfaceVisibility: "hidden",

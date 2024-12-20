@@ -69,16 +69,18 @@ const FlipCard: React.FC<FlipCardProps> = ({
 
     return (
         <View style={styles.container}>
+            
             <Pressable onPress={handleFlip} style={[styles.cardContainer]}>
                 <Animated.View
                     style={[styles.card, frontAnimatedStyle]}>
                     <Text style={[styles.text, textStyle]}>{frontText}</Text>
                 </Animated.View>
                 <Animated.View
-                    style={[styles.card, backAnimatedStyle]}>
+                    style={[styles.card, { backgroundColor: '#eee' }, backAnimatedStyle]}>
                     <Text style={[styles.text, textStyle]}>{backText}</Text>
                 </Animated.View>
             </Pressable>
+            <Text style={{fontSize: 11, color: 'grey', marginTop: 10}}>Tap to flip</Text>
         </View>
     );
 };
@@ -86,7 +88,7 @@ const FlipCard: React.FC<FlipCardProps> = ({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        top: Platform.OS === "ios"? 200: 100,
+        top: Platform.OS === "ios"? 100: 100,
         // justifyContent: 'center',
         alignItems: 'center',
     },

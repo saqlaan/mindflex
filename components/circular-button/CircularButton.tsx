@@ -52,9 +52,9 @@ const styles = StyleSheet.create({
     },
     text: {
         marginTop: 8,
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: '500',
-        color: '#000', // Black color for text
+        color: '#333', // Black color for text
         textAlign: 'center',
     },
 });
