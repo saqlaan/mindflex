@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import { TextInput, StyleSheet, View, FlatList, TouchableOpacity, Button } from 'react-native';
+import { TextInput, StyleSheet, View, FlatList, TouchableOpacity } from 'react-native';
 
 import { useWordContext } from '@/context/WordsContext';
 import { router, useGlobalSearchParams } from 'expo-router';
 import Header from '@/components/header/Header';
 import { createWord, readWords, updateWord } from '@/firebase/words/operations';
 import { Text, useTheme } from '@ui-kitten/components';
-import { showMessage } from 'react-native-flash-message';
 
 
 export default function AddWord() {
@@ -46,7 +45,7 @@ export default function AddWord() {
             router.back();
         } else {
             createWord({ word, translation, tag: selectedTag, visited: 0 })
-            createWord({ translation, word, tag: selectedTag, visited: 0 })
+            createWord({ translation: word, word: translation, word, tag: selectedTag, visited: 0 })
             setMessage("Word added successfully")
             resetForm();
             setTimeout(() => {

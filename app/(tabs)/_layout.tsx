@@ -14,7 +14,6 @@ const TabBarBackground = () => (
 );
 
 export default function TabLayout() {
-    const colorScheme = useColorScheme();
     const theme = useTheme();
 
     return (
@@ -50,14 +49,14 @@ export default function TabLayout() {
                     ,
                 }}
             />
-            <Tabs.Screen
+            {/* <Tabs.Screen
                 name="add-word"
                 options={{
                     title: 'Add Word',
                     tabBarLabelStyle: { fontSize: 11 },
                     tabBarIcon: ({ focused }) => <Feather name={'plus-square'} size={20} color={focused ? theme['color-white'] : theme['color-light-gray']} />,
                 }}
-            />
+            /> */}
             <Tabs.Screen
                 name="wordsLibrary"
                 options={{
@@ -67,14 +66,14 @@ export default function TabLayout() {
                 }}
             />
 
-            <Tabs.Screen
+            {/* <Tabs.Screen
                 name="settings"
                 options={{
                     title: 'Settings',
                     tabBarLabelStyle: { fontSize: 11 },
                     tabBarIcon: ({ focused }) => <Feather name={'settings'} size={20} color={focused ? theme['color-white'] : theme['color-light-gray']} />,
                 }}
-            />
+            /> */}
         </Tabs>
     );
 }
