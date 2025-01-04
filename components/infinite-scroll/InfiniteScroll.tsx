@@ -16,7 +16,7 @@ import { CircularButton } from "../circular-button/CircularButton";
 import Feather from "@expo/vector-icons/Feather";
 import { shuffleWords } from "@/lib/functions/shuffle-words";
 
-const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
+const InfiniteScroll = ({ type, level }: { type: EXPLORE_WORDS_TYPE, level?: number }) => {
   const { words, newWords, reviewWords } = useWordContext();
   const [visitWords, setVisitWords] = useState<Word[]>([]);
   const flatListRef = useRef<FlatList>(null);
@@ -30,11 +30,18 @@ const InfiniteScroll = ({ type }: { type: EXPLORE_WORDS_TYPE }) => {
     if (type === EXPLORE.NEW) {
       setVisitWords(shuffleWords(newWords));
     } else if (type === EXPLORE.REVIEW) {
-      setVisitWords(shuffleWords(reviewWords));
+      if (level) {
+        const reviewWordsByLevel = reviewWords.filter(word => word.difficultyLevel == level);
+        console.log({ level });
+        setVisitWords(shuffleWords(reviewWordsByLevel));
+      } else {
+        setVisitWords(shuffleWords(reviewWords));
+      }
     } else if (type === EXPLORE.ALL) {
       setVisitWords(shuffleWords(words));
     }
-  }, [type]);
+  }, [type, level, reviewWords, newWords, words]);
+
 
   const renderItem = ({ item }: { item: Word }) => (
     <WordScrollItem word={item} />

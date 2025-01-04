@@ -23,7 +23,7 @@ const WordScrollItem = ({ word }: { word: Word }) => {
         return (
             <TouchableWithoutFeedback onPress={() => setShowTranslation(value => !value)}>
                 <View style={[styles.container, { height: height, backgroundColor: '#fff', paddingBottom: bottom, position:'relative' }]}>
-                    <FlipCard frontText={word.word} backText={word.translation}/>
+                    <FlipCard frontText={word.word} backText={word.translation} hint={word.hint} />
                 </View >
             </TouchableWithoutFeedback>
         );

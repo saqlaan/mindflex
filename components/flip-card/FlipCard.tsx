@@ -20,6 +20,7 @@ import Animated, {
 interface FlipCardProps {
     frontText: string;
     backText: string;
+    hint?: string;
     width?: number;
     height?: number;
     duration?: number;
@@ -33,6 +34,7 @@ const wHeight = Dimensions.get("window").height;
 const FlipCard: React.FC<FlipCardProps> = ({
     frontText,
     backText,
+    hint,
     width = 200, // Default width 200
     height = 400, // Default height 400
     duration = 500,
@@ -73,7 +75,8 @@ const FlipCard: React.FC<FlipCardProps> = ({
             <Pressable onPress={handleFlip} style={[styles.cardContainer]}>
                 <Animated.View
                     style={[styles.card, frontAnimatedStyle]}>
-                    <Text style={[styles.text, textStyle]}>{frontText}</Text>
+                    <Text style={[styles.text, textStyle, {marginBottom: 10}]}>{frontText}</Text>
+                    <Text style={[styles.text, textStyle, {fontSize: 12}]}>{hint}</Text>
                 </Animated.View>
                 <Animated.View
                     style={[styles.card, { backgroundColor: '#eee' }, backAnimatedStyle]}>

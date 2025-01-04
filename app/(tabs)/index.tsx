@@ -1,7 +1,6 @@
 import { router, useFocusEffect } from "expo-router";
 import {
   Alert,
-  StatusBar,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -11,133 +10,140 @@ import {
   Platform,
 } from "react-native";
 import LottieView from "lottie-react-native";
-
-import { ThemedText } from "@/components/ThemedText";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useCallback, useRef, useState } from "react";
 import { useWordContext } from "@/context/WordsContext";
-import AddWordForm from "@/components/add-word/AddWordForm";
+
 import { Text } from "@ui-kitten/components";
-import { EXPLORE } from "@/types";
 import Logo from "@/assets/images/logo-no-background.png";
-import HomeCard from "@/components/home-card/HomeCard";
-import Feather from "@expo/vector-icons/Feather";
-import alertAnimation from "@/assets/animations/alert.json";
-import Explore from "../explore";
-import { ExploreSection } from "./components/explore-section/ExploreSection";
-import { WordsReviewSection } from "./components/words-review-section/WordsReviewSection";
 import { tabHeight } from "@/core/values";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { ExploreSection } from "@/components/explore-section/ExploreSection";
+import { WordsReviewSection } from "@/components/words-review-section/WordsReviewSection";
 
-export default function index() {
-  const { resetTimeSpent, newWords, words, reviewWords, refreshReviewWords } =
-    useWordContext();
+export default function Index() {
+  const { resetTimeSpent, refreshReviewWords } = useWordContext();
   const animation = useRef<LottieView>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const { bottom } = useSafeAreaInsets();
 
+  // Handle screen focus
   useFocusEffect(
     useCallback(() => {
       refreshReviewWords();
       return () => {
         console.log("Screen is out of focus");
       };
-    }, [])
+    }, [refreshReviewWords])
   );
 
-  const onRefresh = () => {
+  // Pull-to-refresh handler
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
-
-    // Simulate fetching new data
     setTimeout(() => {
-      // Add a new item to the list
       refreshReviewWords();
       setRefreshing(false);
-    }, 1500); // Simulate a 1.5-second network request
-  };
+    }, 1500);
+  }, [refreshReviewWords]);
 
+  // Handle resetting time spent
   const handleResetTimeSpent = useCallback(() => {
     Alert.alert(
-      "Reset time spend",
-      "Are you sure you want to the state of the words?",
+      "Reset Time Spent",
+      "Are you sure you want to reset the state of the words?",
       [
         { text: "Cancel", style: "cancel" },
         {
           text: "Confirm",
           style: "destructive",
-          onPress: () => resetTimeSpent(),
+          onPress: resetTimeSpent,
         },
       ]
     );
-  }, []);
+  }, [resetTimeSpent]);
+
+  // Add New Word Button Component
+  const AddNewWordButton = () => (
+    <View style={styles.addWordButtonContainer}>
+      <TouchableOpacity
+        style={styles.addWordButton}
+        onPress={() => router.navigate("/add-word")}
+      >
+        <Ionicons name="add" size={18} color="#fff" />
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flex: 1 }}
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View style={{ flex: 1, padding: 20, paddingBottom: tabHeight }}>
-          <StatusBar
-            barStyle={Platform.OS === "ios" ? "light-contents" : "dark-content"}
-          />
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              source={Logo}
-              style={{ width: "100%", height: 40, objectFit: "contain" }}
-            />
-          </View>
-          <View
-            style={{
-              flex: 1,
-              gap: 20,
-            }}
-          >
-            <ExploreSection />
-            <WordsReviewSection />
-          </View>
-          <View style={{ alignItems: "center" }}>
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#333",
-                // width: 150,
-                paddingVertical: 20,
-                paddingHorizontal: 20,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 20,
-                flexDirection: "row",
-                gap: 10,
-              }}
-                          onPress={() => router.navigate('/add-word')}
-            >
-              <Text style={{ color: "#fff", fontWeight: "500" }}>
-                Add new word
-              </Text>
-              <Ionicons name="add" size={18} color={"#fff"} />
-            </TouchableOpacity>
-          </View>
+        <View style={styles.logoContainer}>
+          <Image source={Logo} style={styles.logo} />
         </View>
+
+        <View style={styles.contentContainer}>
+          <ExploreSection />
+          <WordsReviewSection />
+        </View>
+        <AddNewWordButton />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
+// Stylesheet
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
+    backgroundColor: "#fff",
+  },
+  scrollView: {
+    flex: 1,
+    paddingBottom: Platform.OS === "ios" ? 85 : 70,
+  },
+  scrollViewContent: {
+    flex: 1,
+  },
+  logoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
+  },
+  logo: {
+    width: "100%",
+    height: 40,
+    resizeMode: "contain",
+  },
+  contentContainer: {
+    flex: 1,
+    gap: 20,
+    paddingHorizontal: 20,
+    paddingBottom: tabHeight,
+  },
+  addWordButtonContainer: {
+    alignItems: "center",
+  },
+  addWordButton: {
+    backgroundColor: "#333",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    flexDirection: "row",
+    gap: 10,
+    position: "absolute",
+    width: 50,
+    height: 50,
+    right: 20,
+    bottom: 20,
+  },
+  addWordText: {
+    color: "#fff",
+    fontWeight: "500",
   },
 });

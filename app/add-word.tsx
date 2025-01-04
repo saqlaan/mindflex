@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { TextInput, StyleSheet, View, FlatList, TouchableOpacity } from 'react-native';
-
 import { useWordContext } from '@/context/WordsContext';
 import { router, useGlobalSearchParams } from 'expo-router';
 import Header from '@/components/header/Header';
 import { createWord, readWords, updateWord } from '@/firebase/words/operations';
 import { Text, useTheme } from '@ui-kitten/components';
+import { set } from 'date-fns';
 
 
 export default function AddWord() {
@@ -18,6 +18,7 @@ export default function AddWord() {
     const [message, setMessage]= useState<string | null>(null)
     const isValid = word !== "" && translation !== "" && selectedTag !== ""
     const theme = useTheme();
+
     useEffect(() => {
         async function injectWord() {
             if (id) {
@@ -27,6 +28,7 @@ export default function AddWord() {
                     setWord(existingWord.word)
                     setTranslation(existingWord.translation)
                     setSelectedTag(existingWord.tag)
+
                 }
             }
         }
@@ -44,8 +46,8 @@ export default function AddWord() {
             })
             router.back();
         } else {
-            createWord({ word, translation, tag: selectedTag, visited: 0 })
-            createWord({ translation: word, word: translation, word, tag: selectedTag, visited: 0 })
+            createWord({ word, translation, tag: selectedTag,hint, visited: 0 })
+            // createWord({ translation: word, word: translation, tag: selectedTag, visited: 0 })
             setMessage("Word added successfully")
             resetForm();
             setTimeout(() => {
@@ -59,6 +61,7 @@ export default function AddWord() {
         setWord('')
         setTranslation('');
         setSelectedTag('German A1')
+        setHint('')
     }, [])
 
     return (
@@ -69,31 +72,31 @@ export default function AddWord() {
                 <View style={{ flex: 1, paddingTop: 20 }}>
                     <TextInput
                         style={styles.input}
-                        placeholder="Type your word here"
+                        placeholder="Start typing your word here..."
                         value={word}
                         onChangeText={setWord}
                         autoCapitalize='none'
                         autoCorrect={false}
-                        placeholderTextColor={'#ccc'}
+                        placeholderTextColor={'#B3B3B3'}
                     />
                     <TextInput
                         style={styles.input}
-                        placeholder="Type your word translation here"
+                        placeholder="Start typing your word translation here"
                         value={translation}
                         onChangeText={setTranslation}
                         autoCapitalize='none'
                         autoCorrect={false}
-                        placeholderTextColor={'#ccc'}
+                        placeholderTextColor={'#B3B3B3'}
                     />
-                    {/* <TextInput
+                    <TextInput
                         style={styles.input}
-                        placeholder="Any hint"
+                        placeholder="Anything else you want to add?"
                         value={hint}
                         onChangeText={setHint}
                         autoCapitalize='none'
                         autoCorrect={false}
-                        placeholderTextColor={'#ccc'}
-                    /> */}
+                        placeholderTextColor={'#B3B3B3'}
+                    />
                     <View style={{ marginBottom: 20 }} />
                     <View style={{ marginBottom: 20 }}>
                         <FlatList
